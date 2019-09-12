@@ -7,11 +7,11 @@ setwd("/n/home00/rkahn/seq")
 require(seedy)
 require(ggplot2)
 
-betas <- c(0.0026,0.0029,0.003,0.0032,0.0035,0.0045,0.006)
+betas <- c(0.0027,0.0029,0.003,0.0032,0.0035,0.0045,0.006)
 direct_VEs <- c(0.6,0.8)
 infect_VEs <- c(0,0.3,0.5,0.7)
 
-m<-1
+m<-2
 n<-1
 p<-2
 
@@ -754,7 +754,6 @@ analyse_data <- function(results_edge_list,trial_nodes,trial_startday,trial_leng
   RR_inf <- (vacc_vacc_inf+vacc_cont_inf)/(cont_vacc_inf+cont_cont_inf)
   num_inf_by_vacc <- vacc_vacc_inf+vacc_cont_inf
   num_inf_by_cont <- cont_vacc_inf+cont_cont_inf
-  Var <- ((numevents_vacc - num_inf_by_vacc)/num_inf_by_vacc) / numevents_vacc +  ((numevents_cont - num_inf_by_cont)/num_inf_by_cont) / numevents_cont 
 
   results_edge_list_analysis$Infector[is.na(results_edge_list_analysis$Infector) & results_edge_list_analysis$eventstatus==1] <- 0
   results_infected <- results_edge_list_analysis[results_edge_list_analysis$eventstatus==1,]
@@ -764,7 +763,7 @@ analyse_data <- function(results_edge_list,trial_nodes,trial_startday,trial_leng
   
   list(VE_pointest,pval,numevents_vacc,numevents_cont,sample_size,
        RR_inf,vacc_vacc_inf,vacc_cont_inf,cont_vacc_inf,cont_cont_inf,importation,results_edge_list_analysis,
-       results_infected,Var)
+       results_infected)
   
 }
 
@@ -795,7 +794,7 @@ for (sim in 1:nsim) {
     
     list[VE,pval,events_vacc,events_cont,analysed_trialsize,
          RR_inf,vacc_vacc_inf,vacc_cont_inf,cont_vacc_inf,cont_cont_inf,importation,results_edge_list_analysis,
-         results_infected,Var]<-
+         results_infected]<-
       analyse_data(results_edge_list,trial_nodes,trial_startday,trial_length,num_clusters_perarm,0)
     
 write.csv(results_edge_list_analysis, paste0(sim,"_results_edge_list_analysis",R0,"_",infect_VE,"_",direct_VE,"_",mut.rate,"_",bn,"_",infperiod_shape,"_",sample_percent,"_","sample.csv"))

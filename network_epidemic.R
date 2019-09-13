@@ -37,7 +37,7 @@ rate_between<-.001
 beta<-betas[m]
 # Expected number of importations to the population over two years
 num_introductions<-20
-# Leaky multiplicative efficacy of vaccine
+# All or nothing efficacy of vaccine
 direct_VE<-direct_VEs[n]
 infect_VE <- infect_VEs[p]
 # Gamma-distribution parameters of infectious period
@@ -61,7 +61,7 @@ sample_percent <- 1
 # mutation rate source: http://science.sciencemag.org/content/348/6230/117.long - correct interpretation?
 
 gen_len <- 13155  #Campbell 2018
-mut.rate <- 0.0000119*gen_len/4 #Campbell 2018 gives 0.0000119 per site(?) per day
+mut.rate <- 0.0000119*gen_len/4 #Campbell 2018 gives 0.0000119 per site per day
                     #but need per generation time (same article says 3 days but leaving as 1 for now)
 bn <- 10
 
@@ -151,7 +151,7 @@ network_epidemic<-function(g,beta,num_introductions,VE,VEI,edge_list,
   # contact between an infectious and a susceptible.
   # num_introductions - how many separate introductions we expect on average from the main epidemic. This is used
   # to calibrate the external force of infection
-  # VE - direct leaky efficacy of the vaccine
+  # VE - all or nothing efficacy of the vaccine
   # bTrial - whether we are running a trial or not
   # bCluster - indicator of whether we are running the cRCT (1) or the iRCT (0)
   # trial_startday - first day of trial enrollment

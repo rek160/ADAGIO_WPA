@@ -97,5 +97,51 @@ clusterInfectors <- function(df, indIDVar, pVar,
   return(clustRes2)
 }
 
+## Function to find clusters using hierarchical clustering ##
+
+findClustersHC <- function(df, pVar, cutoff = 0.05,
+                           clustMethod = c("hc_absolute", "hc_relative")){
+  
+  df <- as.data.frame(df[order(-df[, pVar]), ])
+  
+  #Clustering the infectors using hierarchical cluster with minimum distance
+  hclustS <- stats::hclust(stats::dist(df[, pVar]), method = "single")
+  hclustScut <- stats::cutree(hclustS, 2)
+  df$cluster <- hclustScut
+  
+  #Finding the boundaries of the two clusters:
+  #Minimum value in the top cluster
+  minC1 <- min(df[df$cluster == 1, pVar])
+  #Maximum value in the bottom cluster
+  maxC2 <- max(df[df$cluster == 2, pVar])
+  #Finding the gap between the two clusters
+  gap <- minC1 - maxC2
+  
+  ## Alternatively ##
+  #gap <- hclustS$height[length(hclustS$height)]
+  
+  #Determining which cases should have clusters based on the absolute
+  #size of the gap between clusters
+  if(clustMethod == "hc_absolute"){
+    
+    if(gap < cutoff){
+      df$cluster <- 2
+    }
+  }
+  
+  #Determining which cases should have clusters based on the relative
+  #size of the gap between clusters - gap between clusters needs to be
+  #cutoff times greater then the next largest gap in probabilities
+  if(clustMethod == "hc_relative"){
+    
+    allGaps <- diff(df[, pVar])
+    secondGap <- abs(sort(allGaps)[2])
+    
+    if(is.na(secondGap) | gap < cutoff*secondGap){
+      df$cluster <- 2
+    }
+  }
+  return(df)
+}
 
 
